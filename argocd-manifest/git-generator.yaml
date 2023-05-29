@@ -1,22 +1,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: git-helm-folder
+  name: git-helm-folder-stage
 spec:
   generators:
     - git:
         repoURL: https://github.com/avie-everc/argocd-example-apps.git
         revision: HEAD
         directories:
-          - path: helm/*
+          - path: helm/* #
   template:
     metadata:
-      name: '{{path[0]}}'
+      name: '{{path[1]}}'
     spec:
       project: default
       source:
         repoURL: https://github.com/avie-everc/argocd-example-apps.git
         targetRevision: HEAD
+        helm:
+          valueFiles:
+            - 'values-stage.yaml'
         path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
